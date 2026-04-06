@@ -103,7 +103,7 @@
         <tbody>
           <% @sales_by_day.each do |date, total| %>
             <tr>
-              <td><%= date.strftime("%d/%m/%Y") %></td>
+              <td><%= date.is_a?(String) ? Date.parse(date).strftime("%d/%m/%Y") : date.strftime("%d/%m/%Y") %></td>
               <td class="text-right font-weight-bold"><%= number_to_currency(total) %></td>
             </tr>
           <% end %>

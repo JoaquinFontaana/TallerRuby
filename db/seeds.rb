@@ -80,7 +80,7 @@ end
 
 puts "Creando ventas de prueba para el reporte..."
 # Asegurar rol EMPLEADO
-empleado_role = Role.find_or_create_by!(name: "EMPLEADO", description: "Rol de Vendedor")
+empleado_role = Role.find_or_create_by!(name: "EMPLEADO")
 vendedor = User.find_or_create_by!(email: "vendedor@gmail.com") do |u|
   u.name = "Vendedor"
   u.surname = "Reportes"
@@ -92,8 +92,6 @@ end
 cliente = Client.find_or_create_by!(dni: "12345678") do |c|
   c.name = "Cliente"
   c.surname = "Prueba"
-  c.email = "cliente@prueba.com"
-  c.phone = "123456789"
 end
 
 sales_count = 25
@@ -102,7 +100,7 @@ sales_count.times do |i|
   random_date = rand(0..60).days.ago
 
   sale = Sale.create!(
-    user: [User.find_by(email: "admin@gmail.com"), vendedor].sample,
+    user: [ User.find_by(email: "admin@gmail.com"), vendedor ].sample,
     client: cliente,
     total: 0,
     created_at: random_date,
@@ -119,9 +117,9 @@ sales_count.times do |i|
     qty = rand(1..3)
     # Evitar problemas de sobreventa en test si superamos stock
     qty = product.new_product.stock if qty > product.new_product.stock
-    
-    # Restar stock real (simular compra)
-    product.decrement_stock!(qty)
+    # FORZAR recarga del producto para evitar inconsistencias antes de crear SaleProduct
+    product.reload
+    next if product.current_stock < qty
 
     sp = SaleProduct.create!(
       sale: sale,
@@ -129,6 +127,10 @@ sales_count.times do |i|
       quantity: qty,
       price: product.price
     )
+
+    # Restar stock real (simular compra)
+    product.decrement_stock!(qty)
+
     total_sale += (sp.price * sp.quantity)
   end
 
