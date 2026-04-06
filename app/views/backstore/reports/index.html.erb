@@ -1,67 +1,93 @@
 <div class="reports-container">
   <div class="reports-header">
-    <h1 class="page-title">Reporte de Ventas</h1>
-    <p class="page-subtitle">Resumen de actividad comercial</p>
+    <div class="header-text">
+      <h1 class="page-title">Reporte de Ventas</h1>
+      <p class="page-subtitle">Resumen de actividad comercial</p>
+    </div>
   </div>
 
   <!-- Filtros -->
   <div class="filter-card">
     <%= form_with url: backstore_reports_path, method: :get, local: true, class: "filter-form" do |f| %>
-      <div class="filter-group">
-        <%= f.label :start_date, "Desde", class: "filter-label" %>
-        <%= f.date_field :start_date, value: @start_date, class: "filter-input" %>
-      </div>
-      <div class="filter-group">
-        <%= f.label :end_date, "Hasta", class: "filter-label" %>
-        <%= f.date_field :end_date, value: @end_date, class: "filter-input" %>
-      </div>
-      <div class="filter-group">
-        <label class="filter-label">Tipo de Producto</label>
-        <%= select_tag :type, options_for_select([["Todos", ""]] + @product_types, params[:type]), class: "filter-input" %>
-      </div>
-      <div class="filter-group">
-        <label class="filter-label">Género</label>
-        <%= select_tag :category, options_for_select([["Todos", ""]] + @categories, params[:category]), class: "filter-input" %>
-      </div>
-      <div class="filter-group">
-        <label class="filter-label">Empleado</label>
-        <%= select_tag :user_id, options_from_collection_for_select(@employees, :id, :email, params[:user_id]), prompt: "Todos", class: "filter-input" %>
+      <div class="filter-row">
+        <div class="filter-group">
+          <%= f.label :start_date, "Desde", class: "filter-label" %>
+          <%= f.date_field :start_date, value: @start_date, class: "filter-input" %>
+        </div>
+        <div class="filter-group">
+          <%= f.label :end_date, "Hasta", class: "filter-label" %>
+          <%= f.date_field :end_date, value: @end_date, class: "filter-input" %>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Tipo de Producto</label>
+          <%= select_tag :type, options_for_select([["Todos", ""]] + @product_types, params[:type]), class: "filter-input" %>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Genero</label>
+          <%= select_tag :category, options_for_select([["Todos", ""]] + @categories, params[:category]), class: "filter-input" %>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Empleado</label>
+          <%= select_tag :user_id, options_from_collection_for_select(@employees, :id, :email, params[:user_id]), prompt: "Todos", class: "filter-input" %>
+        </div>
       </div>
       <div class="filter-actions">
-        <%= f.submit "Filtrar", class: "btn-primary" %>
-        <%= link_to "Limpiar", backstore_reports_path, class: "btn-secondary" %>
+        <%= f.submit "Filtrar", class: "btn-filter" %>
+        <%= link_to "Limpiar", backstore_reports_path, class: "btn-clear" %>
       </div>
     <% end %>
   </div>
 
   <!-- Tarjetas de Resumen -->
-  <div class="summary-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
-    <div class="summary-card revenue-card">
-      <div class="card-icon">💰</div>
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="card-icon icon-revenue">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"></line>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+        </svg>
+      </div>
       <div class="card-info">
         <span class="card-label">Total Recaudado</span>
         <span class="card-value"><%= number_to_currency(@total_revenue, strip_insignificant_zeros: true) %></span>
       </div>
     </div>
 
-    <div class="summary-card count-card">
-      <div class="card-icon">🛒</div>
+    <div class="summary-card">
+      <div class="card-icon icon-sales">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+      </div>
       <div class="card-info">
         <span class="card-label">Cantidad de Ventas</span>
         <span class="card-value"><%= @sales_count %></span>
       </div>
     </div>
 
-    <div class="summary-card average-card">
-      <div class="card-icon">📈</div>
+    <div class="summary-card">
+      <div class="card-icon icon-average">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+          <polyline points="17 6 23 6 23 12"></polyline>
+        </svg>
+      </div>
       <div class="card-info">
         <span class="card-label">Promedio por Venta</span>
         <span class="card-value"><%= number_to_currency(@avg_revenue, strip_insignificant_zeros: true) %></span>
       </div>
     </div>
 
-    <div class="summary-card products-card">
-      <div class="card-icon">💿</div>
+    <div class="summary-card">
+      <div class="card-icon icon-products">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+      </div>
       <div class="card-info">
         <span class="card-label">Productos Vendidos</span>
         <span class="card-value"><%= @products_sold || 0 %></span>
@@ -69,29 +95,59 @@
     </div>
   </div>
 
-  <!-- Gráficos -->
-  <div class="charts-section" style="display: grid; gap: 2rem; margin-bottom: 2rem;">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+  <!-- Graficos -->
+  <div class="charts-section">
+    <div class="charts-row">
       <div class="chart-card">
-        <h3 class="section-title">Ventas por Tipo de Producto (CD / Vinilo)</h3>
+        <div class="chart-header">
+          <svg class="chart-title-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+            <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+          </svg>
+          <h3 class="section-title">Ventas por Tipo de Producto</h3>
+        </div>
         <%= pie_chart @sales_by_type, prefix: "$", round: 2, empty: "Sin datos" %>
       </div>
-      
+
       <div class="chart-card">
-        <h3 class="section-title">Ventas por Género Musical</h3>
+        <div class="chart-header">
+          <svg class="chart-title-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+          </svg>
+          <h3 class="section-title">Ventas por Genero Musical</h3>
+        </div>
         <%= pie_chart @sales_by_genre, prefix: "$", round: 2, empty: "Sin datos" %>
       </div>
     </div>
 
-    <div class="chart-card">
-      <h3 class="section-title">Top 5 Productos Más Vendidos (Unidades)</h3>
+    <div class="chart-card chart-card-full">
+      <div class="chart-header">
+        <svg class="chart-title-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+        <h3 class="section-title">Top 5 Productos Mas Vendidos (Unidades)</h3>
+      </div>
       <%= bar_chart @top_5_products, xtitle: "Unidades Vendidas", ytitle: "Producto", empty: "Sin datos" %>
     </div>
   </div>
 
-  <!-- Tabla de Ventas (Opcional, o desglose por día) -->
+  <!-- Tabla de Ventas -->
   <div class="details-section">
-    <h3 class="section-title">Desglose por Día</h3>
+    <div class="table-header">
+      <div class="table-header-text">
+        <svg class="chart-title-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <h3 class="section-title">Desglose por Dia</h3>
+      </div>
+    </div>
     <div class="table-card">
       <table class="reports-table">
         <thead>
@@ -109,7 +165,14 @@
           <% end %>
           <% if @sales_by_day.empty? %>
             <tr>
-              <td colspan="2" class="text-center text-muted">No hay ventas en este período.</td>
+              <td colspan="2" class="empty-state">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:6px;opacity:0.5;">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                No hay ventas en este periodo.
+              </td>
             </tr>
           <% end %>
         </tbody>
@@ -118,149 +181,86 @@
     <div class="pagination-container">
       <%= paginate @sales_by_day %>
     </div>
-    
+
     <div class="pagination-nav">
       <% if @sales_by_day.prev_page %>
-        <%= link_to_prev_page @sales_by_day, '← Anterior', class: 'btn-nav' %>
+        <%= link_to_prev_page @sales_by_day, class: 'btn-nav' do %>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          Anterior
+        <% end %>
       <% else %>
-        <span class="btn-nav disabled">← Anterior</span>
+        <span class="btn-nav disabled">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          Anterior
+        </span>
       <% end %>
 
       <% if @sales_by_day.next_page %>
-        <%= link_to_next_page @sales_by_day, 'Siguiente →', class: 'btn-nav' %>
+        <%= link_to_next_page @sales_by_day, class: 'btn-nav' do %>
+          Siguiente
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        <% end %>
       <% else %>
-        <span class="btn-nav disabled">Siguiente →</span>
+        <span class="btn-nav disabled">
+          Siguiente
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </span>
       <% end %>
     </div>
   </div>
 </div>
 
 <style>
-  /* Pagination Numbers */
-  .pagination-container {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-  }
-
-  .pagination {
-      display: flex;
-      list-style: none;
-      padding: 0;
-      gap: 5px;
-  }
-
-  /* Hide default Kaminari nav buttons in the numbers block */
-  .pagination span.first,
-  .pagination span.last,
-  .pagination span.prev,
-  .pagination span.next {
-      display: none !important;
-  }
-
-  .pagination span a, .pagination span.current {
-      padding: 8px 12px;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      text-decoration: none;
-      color: #64748b;
-      font-size: 0.9rem;
-      transition: all 0.2s;
-  }
-
-  .pagination span a:hover {
-      background-color: #f1f5f9;
-      color: #2563eb;
-      border-color: #cbd5e1;
-  }
-
-  .pagination span.current {
-      background-color: #2563eb;
-      color: white;
-      border-color: #2563eb;
-      font-weight: 600;
-  }
-
-  .pagination span.gap {
-      padding: 8px;
-      color: #94a3b8;
-  }
-
-  /* New Navigation Buttons (Prev/Next) */
-  .pagination-nav {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 15px;
-      padding-bottom: 20px;
-  }
-
-  .btn-nav {
-      padding: 8px 16px;
-      background-color: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      color: #64748b;
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: all 0.2s;
-      min-width: 110px; /* Fixed width for stability */
-      text-align: center;
-      display: inline-block;
-    }
-
-  .btn-nav:not(.disabled):hover {
-      background-color: #f1f5f9;
-      color: #2563eb;
-      border-color: #cbd5e1;
-  }
-
-  .btn-nav.disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      background-color: #f8fafc;
-      color: #94a3b8;
-  }
-
   .reports-container {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 0 20px;
-    font-family: system-ui, -apple-system, sans-serif;
-    color: #334155;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 40px;
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    color: #1e293b;
   }
 
+  /* Header */
   .reports-header {
-    margin-bottom: 30px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .page-title {
-    font-size: 2rem;
-    color: #1a1a1a;
-    margin: 0 0 5px 0;
-    font-weight: 800;
+    font-size: 1.75rem;
+    color: #0f172a;
+    margin: 0 0 4px 0;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
 
   .page-subtitle {
     color: #64748b;
     margin: 0;
+    font-size: 0.95rem;
   }
 
   /* Filtros */
   .filter-card {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 16px;
     border: 1px solid #e2e8f0;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    margin-bottom: 30px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+    margin-bottom: 28px;
   }
 
   .filter-form {
     display: flex;
-    gap: 20px;
-    align-items: flex-end;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .filter-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
   }
 
   .filter-group {
@@ -269,97 +269,222 @@
   }
 
   .filter-label {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: #64748b;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
     margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
 
   .filter-input {
-    padding: 8px 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    font-size: 0.95rem;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.9rem;
     color: #0f172a;
+    background: #f8fafc;
+    transition: all 0.2s ease;
+    outline: none;
   }
 
-  .btn-primary {
-    background-color: #2563eb;
-    color: white;
-    padding: 9px 20px;
+  .filter-input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+    background: #fff;
+  }
+
+  .filter-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .btn-filter {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: #fff;
+    padding: 10px 28px;
     border: none;
-    border-radius: 6px;
+    border-radius: 10px;
     font-weight: 600;
+    font-size: 0.9rem;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
   }
 
-  .btn-primary:hover {
-    background-color: #1d4ed8;
+  .btn-filter:hover {
+    background: linear-gradient(135deg, #4f46e5, #4338ca);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+    transform: translateY(-1px);
+  }
+
+  .btn-clear {
+    padding: 10px 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    background: #fff;
+    transition: all 0.2s ease;
+  }
+
+  .btn-clear:hover {
+    background: #f1f5f9;
+    color: #334155;
+    border-color: #cbd5e1;
   }
 
   /* Summary Cards */
   .summary-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    margin-bottom: 40px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
   }
 
   .summary-card {
-    background: white;
-    padding: 24px;
-    border-radius: 12px;
+    background: #ffffff;
+    padding: 22px;
+    border-radius: 16px;
     border: 1px solid #e2e8f0;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
+    transition: all 0.25s ease;
+  }
+
+  .summary-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
   }
 
   .card-icon {
-    font-size: 2.5rem;
-    background: #f1f5f9;
-    width: 64px;
-    height: 64px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
-    justify_content: center;
-    border-radius: 50%;
+    justify-content: center;
+    border-radius: 12px;
+    flex-shrink: 0;
+  }
+
+  .icon-revenue {
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    color: #16a34a;
+  }
+
+  .icon-sales {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: #2563eb;
+  }
+
+  .icon-average {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #d97706;
+  }
+
+  .icon-products {
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    color: #7c3aed;
   }
 
   .card-info {
     display: flex;
     flex-direction: column;
+    min-width: 0;
   }
 
   .card-label {
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     color: #64748b;
-    font-weight: 500;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    margin-bottom: 4px;
   }
 
   .card-value {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: #0f172a;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
   }
 
-  /* Table */
+  /* Charts Section */
+  .charts-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .chart-card {
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  }
+
+  .chart-card-full {
+    grid-column: 1 / -1;
+  }
+
+  .chart-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .chart-title-icon {
+    color: #6366f1;
+    flex-shrink: 0;
+  }
+
   .section-title {
-    font-size: 1.25rem;
-    color: #1a1a1a;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+  }
+
+  /* Table Section */
+  .details-section {
+    margin-top: 4px;
+  }
+
+  .table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 16px;
   }
 
+  .table-header-text {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
   .table-card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
     overflow: hidden;
-    min-height: 600px;
+    min-height: 500px;
   }
 
   .reports-table {
@@ -368,26 +493,153 @@
   }
 
   .reports-table th {
-    background-color: #f8fafc;
-    color: #64748b;
+    background: #f8fafc;
+    color: #475569;
     font-weight: 600;
     font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 16px 24px;
+    letter-spacing: 0.06em;
+    padding: 14px 24px;
     border-bottom: 1px solid #e2e8f0;
     text-align: left;
   }
 
   .reports-table td {
-    padding: 16px 24px;
+    padding: 14px 24px;
     border-bottom: 1px solid #f1f5f9;
     vertical-align: middle;
     color: #334155;
+    font-size: 0.925rem;
+  }
+
+  .reports-table tbody tr {
+    transition: background 0.15s ease;
+  }
+
+  .reports-table tbody tr:hover {
+    background: #f8fafc;
   }
 
   .text-right { text-align: right; }
   .text-center { text-align: center; }
-  .text-muted { color: #94a3b8; }
-  .font-weight-bold { font-weight: 600; }
+  .font-weight-bold { font-weight: 600; color: #0f172a; }
+
+  .empty-state {
+    text-align: center;
+    color: #94a3b8;
+    padding: 40px 24px !important;
+    font-size: 0.9rem;
+  }
+
+  /* Pagination */
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+  }
+
+  .pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    gap: 4px;
+  }
+
+  .pagination span.first,
+  .pagination span.last,
+  .pagination span.prev,
+  .pagination span.next {
+    display: none !important;
+  }
+
+  .pagination span a, .pagination span.current {
+    padding: 8px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #475569;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .pagination span a:hover {
+    background: #f1f5f9;
+    color: #6366f1;
+    border-color: #c7d2fe;
+  }
+
+  .pagination span.current {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: #fff;
+    border-color: transparent;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+  }
+
+  .pagination span.gap {
+    padding: 8px 6px;
+    color: #94a3b8;
+  }
+
+  .pagination-nav {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding-bottom: 20px;
+  }
+
+  .btn-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    color: #475569;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    min-width: 120px;
+    justify-content: center;
+  }
+
+  .btn-nav:not(.disabled):hover {
+    background: #f8fafc;
+    color: #6366f1;
+    border-color: #c7d2fe;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
+  }
+
+  .btn-nav.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: #f8fafc;
+    color: #94a3b8;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .summary-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .charts-row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .summary-grid {
+      grid-template-columns: 1fr;
+    }
+    .filter-row {
+      grid-template-columns: 1fr;
+    }
+    .card-value {
+      font-size: 1.25rem;
+    }
+  }
 </style>
