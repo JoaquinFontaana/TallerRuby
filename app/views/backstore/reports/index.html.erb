@@ -183,10 +183,9 @@
     </div>
 
     <div class="pagination-nav">
-      <% if @sales_by_day.prev_page %>
-        <%= link_to_prev_page @sales_by_day, class: 'btn-nav' do %>
+      <% if !@sales_by_day.first_page? %>
+        <%= link_to_prev_page @sales_by_day, 'Anterior', class: 'btn-nav' do %>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          Anterior
         <% end %>
       <% else %>
         <span class="btn-nav disabled">
@@ -195,10 +194,9 @@
         </span>
       <% end %>
 
-      <% if @sales_by_day.next_page %>
-        <%= link_to_next_page @sales_by_day, class: 'btn-nav' do %>
-          Siguiente
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      <% if !@sales_by_day.last_page? %>
+        <%= link_to_next_page @sales_by_day, 'Siguiente', class: 'btn-nav' do %>
+         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
         <% end %>
       <% else %>
         <span class="btn-nav disabled">
