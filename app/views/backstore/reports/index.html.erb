@@ -15,19 +15,32 @@
         <%= f.label :end_date, "Hasta", class: "filter-label" %>
         <%= f.date_field :end_date, value: @end_date, class: "filter-input" %>
       </div>
+      <div class="filter-group">
+        <label class="filter-label">Tipo de Producto</label>
+        <%= select_tag :type, options_for_select([["Todos", ""]] + @product_types, params[:type]), class: "filter-input" %>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Género</label>
+        <%= select_tag :category, options_for_select([["Todos", ""]] + @categories, params[:category]), class: "filter-input" %>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Empleado</label>
+        <%= select_tag :user_id, options_from_collection_for_select(@employees, :id, :email, params[:user_id]), prompt: "Todos", class: "filter-input" %>
+      </div>
       <div class="filter-actions">
         <%= f.submit "Filtrar", class: "btn-primary" %>
+        <%= link_to "Limpiar", backstore_reports_path, class: "btn-secondary" %>
       </div>
     <% end %>
   </div>
 
   <!-- Tarjetas de Resumen -->
-  <div class="summary-grid">
+  <div class="summary-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
     <div class="summary-card revenue-card">
       <div class="card-icon">💰</div>
       <div class="card-info">
         <span class="card-label">Total Recaudado</span>
-        <span class="card-value"><%= number_to_currency(@total_revenue) %></span>
+        <span class="card-value"><%= number_to_currency(@total_revenue, strip_insignificant_zeros: true) %></span>
       </div>
     </div>
 
@@ -37,6 +50,42 @@
         <span class="card-label">Cantidad de Ventas</span>
         <span class="card-value"><%= @sales_count %></span>
       </div>
+    </div>
+
+    <div class="summary-card average-card">
+      <div class="card-icon">📈</div>
+      <div class="card-info">
+        <span class="card-label">Promedio por Venta</span>
+        <span class="card-value"><%= number_to_currency(@avg_revenue, strip_insignificant_zeros: true) %></span>
+      </div>
+    </div>
+
+    <div class="summary-card products-card">
+      <div class="card-icon">💿</div>
+      <div class="card-info">
+        <span class="card-label">Productos Vendidos</span>
+        <span class="card-value"><%= @products_sold || 0 %></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos -->
+  <div class="charts-section" style="display: grid; gap: 2rem; margin-bottom: 2rem;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+      <div class="chart-card">
+        <h3 class="section-title">Ventas por Tipo de Producto (CD / Vinilo)</h3>
+        <%= pie_chart @sales_by_type, prefix: "$", round: 2, empty: "Sin datos" %>
+      </div>
+      
+      <div class="chart-card">
+        <h3 class="section-title">Ventas por Género Musical</h3>
+        <%= pie_chart @sales_by_genre, prefix: "$", round: 2, empty: "Sin datos" %>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h3 class="section-title">Top 5 Productos Más Vendidos (Unidades)</h3>
+      <%= bar_chart @top_5_products, xtitle: "Unidades Vendidas", ytitle: "Producto", empty: "Sin datos" %>
     </div>
   </div>
 

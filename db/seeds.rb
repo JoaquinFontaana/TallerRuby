@@ -78,4 +78,62 @@ categories = [ "Rock", "Pop", "Jazz", "Metal" ]
   )
 end
 
+puts "Creando ventas de prueba para el reporte..."
+# Asegurar rol EMPLEADO
+empleado_role = Role.find_or_create_by!(name: "EMPLEADO", description: "Rol de Vendedor")
+vendedor = User.find_or_create_by!(email: "vendedor@gmail.com") do |u|
+  u.name = "Vendedor"
+  u.surname = "Reportes"
+  u.password = "12345678"
+  u.password_confirmation = "12345678"
+  u.role_id = empleado_role.id
+end
+
+cliente = Client.find_or_create_by!(dni: "12345678") do |c|
+  c.name = "Cliente"
+  c.surname = "Prueba"
+  c.email = "cliente@prueba.com"
+  c.phone = "123456789"
+end
+
+sales_count = 25
+sales_count.times do |i|
+  # Fechas aleatorias de los últimos 60 días
+  random_date = rand(0..60).days.ago
+
+  sale = Sale.create!(
+    user: [User.find_by(email: "admin@gmail.com"), vendedor].sample,
+    client: cliente,
+    total: 0,
+    created_at: random_date,
+    updated_at: random_date
+  )
+
+  # 1 a 3 productos por venta
+  total_sale = 0
+  rand(1..3).times do
+    product = Product.all.sample
+    # Saltear si no tiene stock simulado
+    next unless product.new_product && product.new_product.stock > 0
+
+    qty = rand(1..3)
+    # Evitar problemas de sobreventa en test si superamos stock
+    qty = product.new_product.stock if qty > product.new_product.stock
+    
+    # Restar stock real (simular compra)
+    product.decrement_stock!(qty)
+
+    sp = SaleProduct.create!(
+      sale: sale,
+      product: product,
+      quantity: qty,
+      price: product.price
+    )
+    total_sale += (sp.price * sp.quantity)
+  end
+
+  # Actualizar total
+  sale.update!(total: total_sale)
+end
+
 puts "¡Datos de prueba creados con éxito!"

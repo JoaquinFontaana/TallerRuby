@@ -8,17 +8,36 @@ module Backstore
 
       range = @start_date.beginning_of_day..@end_date.end_of_day
 
-      @sales = Sale.where(created_at: range).where(cancelled_at: nil)
+      @sales_base = Sale.joins(sale_products: :product)
+                        .where(created_at: range)
+                        .where(cancelled_at: nil)
 
-      @total_revenue = @sales.sum(:total)
-      @sales_count = @sales.count
+      # 1. Filtros
+      @sales_base = @sales_base.where(products: { type: params[:type] }) if params[:type].present?
+      @sales_base = @sales_base.where(products: { category: params[:category] }) if params[:category].present?
+      @sales_base = @sales_base.where(user_id: params[:user_id]) if params[:user_id].present?
 
-      # Group by day for the table/chart (Ruby-based to avoid DB-specific SQL or gems)
-      sales_data = @sales.to_a.group_by { |s| s.created_at.to_date }
-                            .transform_values { |sales| sales.sum(&:total) }
-                            .sort
+      # 2. Métricas
+      # Sumamos a nivel de line_item para que coincida exactamente con los filtros en productos
+      @total_revenue = @sales_base.sum('sale_products.price * sale_products.quantity')
+      @sales_count = @sales_base.select('sales.id').distinct.count
+      @avg_revenue = @sales_count > 0 ? (@total_revenue / @sales_count.to_f).round(2) : 0
+      @products_sold = @sales_base.sum('sale_products.quantity')
 
-      @sales_by_day = Kaminari.paginate_array(sales_data).page(params[:page]).per(10)
+      # 3. Datos para Gráficos
+      @sales_by_type = @sales_base.group('products.type').sum('sale_products.price * sale_products.quantity')
+      @sales_by_genre = @sales_base.group('products.category').sum('sale_products.price * sale_products.quantity')
+      @top_5_products = @sales_base.group('products.name').sum('sale_products.quantity').sort_by { |k, v| -v }.first(5)
+
+      # 4. Opciones para los filtros en la vista
+      @employees = User.joins(:role).where(roles: { name: 'EMPLEADO' })
+      @product_types = Product.distinct.pluck(:type).compact
+      @categories = Product.distinct.pluck(:category).compact
+
+      # La agrupación anterior por días, adaptada a la nueva base 
+      sales_data = @sales_base.group('DATE(sales.created_at)').sum('sale_products.price * sale_products.quantity')
+      
+      @sales_by_day = Kaminari.paginate_array(sales_data.to_a).page(params[:page]).per(10)
     end
   end
 end
