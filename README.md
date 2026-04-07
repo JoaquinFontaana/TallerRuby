@@ -1,35 +1,9 @@
-# README
-
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
 ## Módulo de Reportes de Ventas
 
 El sistema cuenta con un módulo de reportes diseñado para analizar las ventas realizadas, visualizando componentes gráficos e indicadores clave de rendimiento (KPIs).
 
 ### ¿Cómo acceder?
-1. Inicia sesión en el sistema usando una cuenta válida (por ejemplo, `admin@gmail.com`).
+1. Inicia sesión en el sistema usando una cuenta válida (por ejemplo, `admin@gmail.com` con contraseña default `123456`).
 2. En el menú lateral (Sidebar), da clic en el apartado **"📊 Reportes"**.
 3. Accederás al panel principal donde podrás visualizar los datos y aplicar diferentes filtros de búsqueda cruzados (Fechas, Tipo de Producto, Género, y Empleado).
 

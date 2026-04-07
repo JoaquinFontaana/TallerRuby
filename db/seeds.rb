@@ -20,7 +20,6 @@ admin_role = Role.find_by(name: "ADMIN")
 User.find_or_create_by!(email: "admin@gmail.com") do |u|
   u.name = "Admin"
   u.surname = "Admin"
-  u.password = "Admin123"
   u.role_id = admin_role.id
 end
 
@@ -84,8 +83,12 @@ empleado_role = Role.find_or_create_by!(name: "EMPLEADO")
 vendedor = User.find_or_create_by!(email: "vendedor@gmail.com") do |u|
   u.name = "Vendedor"
   u.surname = "Reportes"
-  u.password = "12345678"
-  u.password_confirmation = "12345678"
+  u.role_id = empleado_role.id
+end
+
+otro_vendedor = User.find_or_create_by!(email: "empleado2@gmail.com") do |u|
+  u.name = "Carlos"
+  u.surname = "Gómez"
   u.role_id = empleado_role.id
 end
 
@@ -94,13 +97,13 @@ cliente = Client.find_or_create_by!(dni: "12345678") do |c|
   c.surname = "Prueba"
 end
 
-sales_count = 25
+sales_count = 50
 sales_count.times do |i|
   # Fechas aleatorias de los últimos 60 días
   random_date = rand(0..60).days.ago
 
   sale = Sale.create!(
-    user: [ User.find_by(email: "admin@gmail.com"), vendedor ].sample,
+    user: [ User.find_by(email: "admin@gmail.com"), vendedor, otro_vendedor ].compact.sample,
     client: cliente,
     total: 0,
     created_at: random_date,
